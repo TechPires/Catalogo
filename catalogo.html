@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo de Eletrônicos — Gabriel Pires</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c1: #FF3CAC;
+    --c2: #784BA0;
+    --c3: #2B86C5;
+    --c4: #F9A825;
+    --c5: #00E5FF;
+    --bg: #0a0a0f;
+    --card: #13131f;
+    --border: rgba(255,255,255,0.07);
+    --text: #f0f0f0;
+    --sub: #aaa;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Background mesh */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: 
+      radial-gradient(ellipse at 20% 20%, rgba(255,60,172,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, rgba(43,134,197,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(120,75,160,0.08) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* HEADER */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 60px 40px 40px;
+    text-align: center;
+  }
+
+  .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, var(--c1), var(--c2));
+    color: white;
+    font-family: 'Unbounded', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 6px 18px;
+    border-radius: 50px;
+    margin-bottom: 20px;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  h1 {
+    font-family: 'Unbounded', sans-serif;
+    font-size: clamp(2rem, 6vw, 4rem);
+    font-weight: 900;
+    line-height: 1.1;
+    animation: fadeDown 0.7s ease both;
+    background: linear-gradient(135deg, #fff 30%, var(--c5) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .subtitle {
+    margin-top: 14px;
+    font-size: 1rem;
+    color: var(--sub);
+    animation: fadeDown 0.8s ease both;
+    max-width: 500px;
+    margin-inline: auto;
+  }
+
+  /* DIVIDER */
+  .divider {
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--c1), var(--c3));
+    margin: 30px auto;
+    border-radius: 2px;
+    animation: fadeDown 0.9s ease both;
+  }
+
+  /* FILTER TABS */
+  .filters {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 0 20px 40px;
+    position: relative;
+    z-index: 10;
+    animation: fadeDown 1s ease both;
+  }
+
+  .filter-btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--sub);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    padding: 8px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+
+  .filter-btn:hover,
+  .filter-btn.active {
+    background: linear-gradient(135deg, var(--c1), var(--c2));
+    border-color: transparent;
+    color: white;
+  }
+
+  /* GRID */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    padding: 0 40px 80px;
+    max-width: 1300px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+  }
+
+  /* CARD */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    animation: fadeUp 0.6s ease both;
+    cursor: pointer;
+  }
+
+  .card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
+    border-color: rgba(255,60,172,0.3);
+  }
+
+  .card-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    background: #1a1a2e;
+  }
+
+  .card-img-placeholder {
+    width: 100%;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card-body {
+    padding: 20px;
+  }
+
+  .card-category {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .card-name {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 10px;
+    color: #fff;
+  }
+
+  .card-desc {
+    font-size: 0.82rem;
+    color: var(--sub);
+    line-height: 1.6;
+    margin-bottom: 18px;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .price {
+    font-family: 'Unbounded', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--c4), var(--c1));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* TAG de condição */
+  .tag {
+    font-size: 0.68rem;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 50px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .tag-novo { background: rgba(0,229,255,0.12); color: var(--c5); border: 1px solid rgba(0,229,255,0.3); }
+  .tag-usado { background: rgba(249,168,37,0.12); color: var(--c4); border: 1px solid rgba(249,168,37,0.3); }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 30px;
+    color: var(--sub);
+    font-size: 0.8rem;
+    border-top: 1px solid var(--border);
+    position: relative;
+    z-index: 10;
+  }
+
+  footer span {
+    background: linear-gradient(135deg, var(--c1), var(--c3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* EMPTY STATE */
+  .empty {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 60px;
+    color: var(--sub);
+    font-size: 0.9rem;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    header { padding: 40px 20px 30px; }
+    .grid { padding: 0 20px 60px; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">✦ Catálogo Oficial ✦</div>
+  <h1>Eletrônicos<br>& Tech</h1>
+  <p class="subtitle">Produtos selecionados com qualidade garantida. Consulte disponibilidade e condições.</p>
+  <div class="divider"></div>
+</header>
+
+<div class="filters">
+  <button class="filter-btn active" onclick="filtrar('todos')">Todos</button>
+  <button class="filter-btn" onclick="filtrar('smartphone')">Smartphones</button>
+  <button class="filter-btn" onclick="filtrar('notebook')">Notebooks</button>
+  <button class="filter-btn" onclick="filtrar('periferico')">Periféricos</button>
+  <button class="filter-btn" onclick="filtrar('componente')">Componentes</button>
+</div>
+
+<div class="grid" id="grid"></div>
+
+<footer>
+  Catálogo criado por <span>Gabriel Pires</span> — Atualizado em 2025
+</footer>
+
+<script>
+const produtos = [
+  {
+    nome: "iPhone 14 128GB",
+    categoria: "smartphone",
+    descricao: "Chip A15 Bionic, câmera dupla 12MP, tela Super Retina XDR 6.1\". Excelente desempenho para uso diário e profissional.",
+    preco: "R$ 3.299",
+    condicao: "usado",
+    emoji: "📱",
+    cor: "linear-gradient(135deg, #1a1a2e, #16213e)"
+  },
+  {
+    nome: "Samsung Galaxy S23",
+    categoria: "smartphone",
+    descricao: "Snapdragon 8 Gen 2, câmera tripla 50MP, bateria 3.900mAh com carregamento rápido 25W.",
+    preco: "R$ 3.799",
+    condicao: "novo",
+    emoji: "📲",
+    cor: "linear-gradient(135deg, #0f2027, #203a43)"
+  },
+  {
+    nome: "Notebook Dell Inspiron 15",
+    categoria: "notebook",
+    descricao: "Intel Core i5 12ª geração, 16GB RAM, SSD 512GB NVMe, tela Full HD 15.6\". Ideal para trabalho e estudos.",
+    preco: "R$ 3.199",
+    condicao: "usado",
+    emoji: "💻",
+    cor: "linear-gradient(135deg, #1a1a2e, #2d1b69)"
+  },
+  {
+    nome: "Notebook Lenovo IdeaPad",
+    categoria: "notebook",
+    descricao: "Ryzen 5 5500U, 8GB RAM, SSD 256GB, bateria de longa duração até 8h. Leve e portátil.",
+    preco: "R$ 2.499",
+    condicao: "novo",
+    emoji: "🖥️",
+    cor: "linear-gradient(135deg, #0d0d0d, #1a0533)"
+  },
+  {
+    nome: "Headset Gamer HyperX Cloud II",
+    categoria: "periferico",
+    descricao: "Áudio surround 7.1 virtual, microfone removível com cancelamento de ruído, almofadas de couro espuma.",
+    preco: "R$ 449",
+    condicao: "usado",
+    emoji: "🎧",
+    cor: "linear-gradient(135deg, #1a0000, #3d0000)"
+  },
+  {
+    nome: "Teclado Mecânico Redragon",
+    categoria: "periferico",
+    descricao: "Switches Blue, iluminação RGB completa, layout ABNT2, anti-ghosting. Ótimo para gamers e digitadores.",
+    preco: "R$ 299",
+    condicao: "novo",
+    emoji: "⌨️",
+    cor: "linear-gradient(135deg, #0a0a1a, #1a1a3e)"
+  },
+  {
+    nome: "Placa de Vídeo RTX 3060 12GB",
+    categoria: "componente",
+    descricao: "NVIDIA GeForce RTX 3060, 12GB GDDR6, suporte Ray Tracing e DLSS. Ótimo custo-benefício para 1080p e 1440p.",
+    preco: "R$ 1.899",
+    condicao: "usado",
+    emoji: "🎮",
+    cor: "linear-gradient(135deg, #003300, #006600)"
+  },
+  {
+    nome: "SSD NVMe Samsung 980 1TB",
+    categoria: "componente",
+    descricao: "Interface PCIe 3.0, leitura até 3.500 MB/s, escrita até 3.000 MB/s. Upgrade definitivo para seu PC.",
+    preco: "R$ 399",
+    condicao: "novo",
+    emoji: "💾",
+    cor: "linear-gradient(135deg, #001f3f, #003366)"
+  },
+  {
+    nome: "Memória RAM 16GB DDR4 3200MHz",
+    categoria: "componente",
+    descricao: "Kit 2x8GB DDR4 3200MHz, compatível com Intel e AMD. Ideal para multitarefas e jogos.",
+    preco: "R$ 249",
+    condicao: "novo",
+    emoji: "🔧",
+    cor: "linear-gradient(135deg, #1a0a00, #3d2200)"
+  },
+  {
+    nome: "Mouse Gamer Logitech G305",
+    categoria: "periferico",
+    descricao: "Wireless sem fio, sensor HERO 12K DPI, autonomia de até 9 meses. Leve e preciso.",
+    preco: "R$ 349",
+    condicao: "usado",
+    emoji: "🖱️",
+    cor: "linear-gradient(135deg, #0d0d0d, #1a1a1a)"
+  },
+  {
+    nome: "Monitor LG 24\" Full HD",
+    categoria: "periferico",
+    descricao: "IPS 75Hz, tempo de resposta 5ms, bordas ultrafinas, entrada HDMI e VGA. Cores vivas e precisas.",
+    preco: "R$ 799",
+    condicao: "usado",
+    emoji: "🖥️",
+    cor: "linear-gradient(135deg, #002233, #004466)"
+  },
+  {
+    nome: "Fonte Corsair 650W 80 Plus Bronze",
+    categoria: "componente",
+    descricao: "650W real, certificação 80 Plus Bronze, semi-modular, proteções contra sobrecarga e curto-circuito.",
+    preco: "R$ 429",
+    condicao: "novo",
+    emoji: "⚡",
+    cor: "linear-gradient(135deg, #1a1000, #332200)"
+  }
+];
+
+const categoriaLabel = {
+  smartphone: "Smartphone",
+  notebook: "Notebook",
+  periferico: "Periférico",
+  componente: "Componente PC"
+};
+
+const categoriaColor = {
+  smartphone: "#FF3CAC",
+  notebook: "#00E5FF",
+  periferico: "#784BA0",
+  componente: "#F9A825"
+};
+
+function renderizar(lista) {
+  const grid = document.getElementById('grid');
+  if (lista.length === 0) {
+    grid.innerHTML = '<div class="empty">Nenhum produto encontrado nessa categoria.</div>';
+    return;
+  }
+  grid.innerHTML = lista.map((p, i) => `
+    <div class="card" style="animation-delay: ${i * 0.07}s">
+      <div class="card-img-placeholder" style="background: ${p.cor}">
+        <span style="font-size: 4.5rem; filter: drop-shadow(0 4px 20px rgba(0,0,0,0.5))">${p.emoji}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-category" style="color: ${categoriaColor[p.categoria]}">${categoriaLabel[p.categoria]}</div>
+        <div class="card-name">${p.nome}</div>
+        <div class="card-desc">${p.descricao}</div>
+        <div class="card-footer">
+          <div class="price">${p.preco}</div>
+          <span class="tag tag-${p.condicao}">${p.condicao === 'novo' ? '✦ Novo' : '↻ Usado'}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filtrar(cat) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  const lista = cat === 'todos' ? produtos : produtos.filter(p => p.categoria === cat);
+  renderizar(lista);
+}
+
+renderizar(produtos);
+</script>
+</body>
+</html>
